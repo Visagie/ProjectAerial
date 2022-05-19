@@ -9,7 +9,7 @@ public class playermovement : MonoBehaviour
     public Slider trashmeter;
     public int trash_collected, trash_divider, totaltrash;
     bool apressed, dpressed, spressed, wpressed;
-    float speed = 25.0f;
+    public float speed = 25.0f;
     Rigidbody2D player;
     int lives = 3;
     public Image life1, life2, life3, o1, o2, o3, o4 , o5, o6;

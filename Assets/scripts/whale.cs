@@ -18,9 +18,10 @@ public class whale : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //GetComponent<Rigidbody2D>().AddForce(Vector3.left * 3 * Time.fixedDeltaTime, ForceMode2D.Impulse);
         if (ismoving)
         {
-            GetComponent<Rigidbody2D>().AddForce(Vector3.left * 3 * Time.fixedDeltaTime, ForceMode2D.Impulse);
+            GetComponent<Rigidbody2D>().AddForce(Vector3.left * 1 * Time.fixedDeltaTime, ForceMode2D.Impulse);
         }
     }
 
