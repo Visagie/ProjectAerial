@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
 public class playermovement : MonoBehaviour
 {
     public Slider trashmeter;
@@ -16,16 +17,29 @@ public class playermovement : MonoBehaviour
     float cntdnw = 120;
     public GameObject winscreen,pause,lost;
     bool ispaused;
+    public GameObject body,injury;
+    public Image dirt;
+    public Animator playerbody;
+    float dirtint;
+
+    bool ismoving;
     // Start is called before the first frame update
     void Start()
     {
+        
+        ismoving = false;
+        playerbody = GetComponent<Animator>();
+        injury.SetActive(false);
         winscreen.SetActive(false);
         pause.SetActive(false);
         lost.SetActive(false);
         ispaused = true;
         trashmeter.value = 0;
         player = GetComponent<Rigidbody2D>();
+        dirt = GetComponent<Image>();
+        dirtint = dirt.color.a;
         
+
     }
 
     // Update is called once per frame
@@ -42,7 +56,11 @@ public class playermovement : MonoBehaviour
                 Pause();
             }
         }
-
+        if (ismoving)
+        {
+            playerbody.SetBool("ismoving", true);
+        }
+        else { playerbody.SetBool("ismoving", false); }
        
         movement();
         lifechecker();
@@ -56,34 +74,46 @@ public class playermovement : MonoBehaviour
         #region
         if (Input.GetKey(KeyCode.W))
         {
+            ismoving = true;
             wpressed = true;
+            body.transform.rotation = Quaternion.Euler(0, 0, 90);
         }
         else
         {
+            ismoving = false;
             wpressed = false;
         }
         if (Input.GetKey(KeyCode.S))
         {
+            ismoving = true;
             spressed = true;
+            body.transform.rotation = Quaternion.Euler(0, 0, -90);
         }
         else
         {
+            ismoving = false;
             spressed = false;
         }
         if (Input.GetKey(KeyCode.A))
         {
+            ismoving = true;
             apressed = true;
+            body.transform.rotation = Quaternion.Euler(0, 180, 0);
         }
         else
         {
+            ismoving = false;
             apressed = false;
         }
         if (Input.GetKey(KeyCode.D))
         {
+            ismoving = true;
             dpressed = true;
+            body.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         else
         {
+            ismoving = false;
             dpressed = false;
         }
         #endregion
@@ -100,11 +130,7 @@ public class playermovement : MonoBehaviour
         if (apressed)
         {
             player.AddForce(Vector3.left * speed * Time.fixedDeltaTime, ForceMode2D.Impulse);
-        }
-        
-        
-         
-        
+        } 
         if (dpressed)
         {
             player.AddForce(Vector3.right * speed * Time.fixedDeltaTime, ForceMode2D.Impulse);
@@ -116,6 +142,10 @@ public class playermovement : MonoBehaviour
         if (spressed)
         {
             player.AddForce(Vector3.down * speed * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            player.AddForce(Vector3.up * 3 * Time.fixedDeltaTime, ForceMode2D.Impulse);
         }
         #endregion
     }
@@ -236,6 +266,9 @@ public class playermovement : MonoBehaviour
 
     void trashcollection()
     {
+        dirtint-=10;
+        //dirt.color = new Color(dirt.color.r, dirt.color.g, dirt.color.b,0);
+        dirt.color = new Color(0, 0, 0,0);
         trashmeter.value+= 0.1f;
     }
 
@@ -283,6 +316,7 @@ public class playermovement : MonoBehaviour
         {
             lives--;
             cntdnw -= 10;
+            StartCoroutine(getinjured());
             
         } 
 
@@ -295,5 +329,13 @@ public class playermovement : MonoBehaviour
         {
             trashcollection();
         }
+    }
+
+
+    IEnumerator getinjured()
+    {
+        injury.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        injury.SetActive(false);
     }
 }

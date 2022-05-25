@@ -21,7 +21,7 @@ public class whale : MonoBehaviour
         //GetComponent<Rigidbody2D>().AddForce(Vector3.left * 3 * Time.fixedDeltaTime, ForceMode2D.Impulse);
         if (ismoving)
         {
-            GetComponent<Rigidbody2D>().AddForce(Vector3.left * 1 * Time.fixedDeltaTime, ForceMode2D.Impulse);
+            GetComponent<Rigidbody2D>().AddForce(Vector3.left *0.1f* Time.fixedDeltaTime, ForceMode2D.Impulse);
         }
     }
 
