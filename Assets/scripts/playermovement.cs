@@ -268,7 +268,7 @@ public class playermovement : MonoBehaviour
     {
         dirtint-=10;
         //dirt.color = new Color(dirt.color.r, dirt.color.g, dirt.color.b,0);
-        dirt.color = new Color(0, 0, 0,0);
+        //dirt.color = new Color(0, 0, 0,0);
         trashmeter.value+= 0.1f;
     }
 
