@@ -15,10 +15,14 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
     }
 
-    /* public void Settings()
+    public void ControlsMenu()
     {
-        SceneManager.LoadScene("Settings");
-    } 
-    you can change this to a 'controls' scene. 
-    */
+        SceneManager.LoadScene("Controls");
+    }
+    
+    public void StartMenu()
+    {
+        SceneManager.LoadScene("start");
+    }
+    
 }

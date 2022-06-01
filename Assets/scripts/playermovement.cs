@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class playermovement : MonoBehaviour
 {
-    public Slider trashmeter;
+    public Image trashmeter;
     public int trash_collected, trash_divider, totaltrash;
     bool apressed, dpressed, spressed, wpressed;
     public float speed = 25.0f;
@@ -26,7 +26,7 @@ public class playermovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        trashmeter = GetComponent<Image>();
         ismoving = false;
         playerbody = GetComponent<Animator>();
         injury.SetActive(false);
@@ -34,7 +34,7 @@ public class playermovement : MonoBehaviour
         pause.SetActive(false);
         lost.SetActive(false);
         ispaused = true;
-        trashmeter.value = 0;
+        trashmeter.fillAmount = 0;
         player = GetComponent<Rigidbody2D>();
         dirt = GetComponent<Image>();
         dirtint = dirt.color.a;
@@ -118,7 +118,7 @@ public class playermovement : MonoBehaviour
         }
         #endregion
 
-        if(trashmeter.value == 1)
+        if(trashmeter.fillAmount == 1)
         {
             winning_condition();
         }
@@ -269,7 +269,7 @@ public class playermovement : MonoBehaviour
         dirtint-=10;
         //dirt.color = new Color(dirt.color.r, dirt.color.g, dirt.color.b,0);
         //dirt.color = new Color(0, 0, 0,0);
-        trashmeter.value+= 0.1f;
+        trashmeter.fillAmount+= 0.1f;
     }
 
 
