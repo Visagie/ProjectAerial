@@ -15,6 +15,7 @@ public class whale : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        turn = true;
         ismoving = true;
         speed = 0.1f;
     }

@@ -10,7 +10,7 @@ public class playermovement : MonoBehaviour
     public Slider trashmeter;
     public int trash_collected, trash_divider, totaltrash;
     bool apressed, dpressed, spressed, wpressed;
-    public float speed = 25.0f;
+    public float speed = 50.0f;
     Rigidbody2D player;
     int lives = 3;
     public Image life1, life2, life3, o1, o2, o3, o4 , o5, o6;
@@ -22,11 +22,19 @@ public class playermovement : MonoBehaviour
     public Animator playerbody;
     float dirtint;
     public Slider oxybar;
+    private SpriteRenderer playerSprite;
+
+    public AudioSource breathingSound;
+    public AudioSource jellyfishStingSound;
+    public AudioSource kickingSound;
+    public AudioSource pickUpTrashSound;
+
 
     bool ismoving;
     // Start is called before the first frame update
     void Start()
     {
+        playerSprite = GetComponent<SpriteRenderer>();
         dirtint = 0.7f;
         ismoving = false;
         playerbody = GetComponent<Animator>();
@@ -49,6 +57,8 @@ public class playermovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (ispaused)
@@ -70,17 +80,52 @@ public class playermovement : MonoBehaviour
         lifechecker();
         counter();
         O2check();
+        lookingat();
         
 
     }
+
+
+    void lookingat()
+    {
+        Vector3 mouseposition = getmouseworldposition();
+        Vector3 aimdirection = (mouseposition - transform.position).normalized;
+        float angle = Mathf.Atan2(aimdirection.y, aimdirection.x) * Mathf.Rad2Deg;
+        transform.eulerAngles = new Vector3(0, 0, angle);
+    }
+
+    public static Vector3 getmouseworldposition()// by code monkey: https://www.youtube.com/watch?v=fuGQFdhSPg4
+    {
+        Vector3 vec = getmouseworldpositionwithz(Input.mousePosition, Camera.main);
+        vec.z = 0f;
+        return vec;
+    }
+    public static Vector3 getmouseworldpositionwithz()
+    {
+        return getmouseworldpositionwithz(Input.mousePosition, Camera.main);
+    }
+    public static Vector3 getmouseworldpositionwithz(Camera worldcamera)
+    {
+        return getmouseworldpositionwithz(Input.mousePosition, worldcamera);
+    }
+    public static Vector3 getmouseworldpositionwithz(Vector3 screenposition, Camera worldcamera)
+    {
+        Vector3 worldposition = worldcamera.ScreenToWorldPoint(screenposition);
+
+        return worldposition;
+    }
+
     private void FixedUpdate()
     {
+
+        //faceMouse();
         #region
         if (Input.GetKey(KeyCode.W))
         {
+            kickingSound.Play();
             ismoving = true;
             wpressed = true;
-            body.transform.rotation = Quaternion.Euler(0, 0, 90);
+           // body.transform.rotation = Quaternion.Euler(0, 0, 90);
         }
         else
         {
@@ -89,9 +134,10 @@ public class playermovement : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.S))
         {
+            kickingSound.Play();
             ismoving = true;
             spressed = true;
-            body.transform.rotation = Quaternion.Euler(0, 0, -90);
+            //body.transform.rotation = Quaternion.Euler(0, 0, -90);
         }
         else
         {
@@ -100,9 +146,11 @@ public class playermovement : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.A))
         {
+            kickingSound.Play();
             ismoving = true;
             apressed = true;
-            body.transform.rotation = Quaternion.Euler(0, 180, 0);
+            //playerSprite.flipX = true;
+            //body.transform.rotation = Quaternion.Euler(0, 180, 0);
         }
         else
         {
@@ -111,9 +159,11 @@ public class playermovement : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.D))
         {
+           kickingSound.Play();
             ismoving = true;
             dpressed = true;
-            body.transform.rotation = Quaternion.Euler(0, 0, 0);
+            //playerSprite.flipX = false;
+            //body.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         else
         {
@@ -127,6 +177,16 @@ public class playermovement : MonoBehaviour
             winning_condition();
         }
     }
+
+  /*  void faceMouse()
+    {
+        Vector3 mousePosition = Input.mousePosition;
+        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+        Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+
+        transform.up = direction;
+    }*/
 
     void movement()
     {
@@ -215,9 +275,12 @@ public class playermovement : MonoBehaviour
 
     private void Pause()
     {
+        
+        
         Time.timeScale = 0f;
         pause.SetActive(true);
         ispaused = true;
+        dirt.enabled = true;
     }
 
     public void resume()
@@ -250,10 +313,35 @@ public class playermovement : MonoBehaviour
         Application.Quit();
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "enemy")
+        {
+            jellyfishStingSound.Play();
+            lives--;
+            cntdnw -= 10;
+            StartCoroutine(getinjured());
+
+        }
+
+        if (other.gameObject.tag == "oxygen")
+        {
+            breathingSound.Play();
+            replenish();
+        }
+
+        if (other.gameObject.tag == "collect")
+        {
+            pickUpTrashSound.Play();
+            trashcollection();
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag == "enemy")
         {
+            jellyfishStingSound.Play();
             lives--;
             cntdnw -= 10;
             StartCoroutine(getinjured());
@@ -262,14 +350,18 @@ public class playermovement : MonoBehaviour
 
         if(other.gameObject.tag == "oxygen")
         {
+            breathingSound.Play();
             replenish();
         }
 
         if (other.gameObject.tag == "collect") 
         {
+            pickUpTrashSound.Play();
             trashcollection();
         }
     }
+
+    
 
 
     IEnumerator getinjured()
