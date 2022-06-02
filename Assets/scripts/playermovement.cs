@@ -23,6 +23,7 @@ public class playermovement : MonoBehaviour
     float dirtint;
     public Slider oxybar;
     private SpriteRenderer playerSprite;
+    float angle;
 
     public AudioSource breathingSound;
     public AudioSource jellyfishStingSound;
@@ -90,7 +91,7 @@ public class playermovement : MonoBehaviour
     {
         Vector3 mouseposition = getmouseworldposition();
         Vector3 aimdirection = (mouseposition - transform.position).normalized;
-        float angle = Mathf.Atan2(aimdirection.y, aimdirection.x) * Mathf.Rad2Deg;
+         angle = Mathf.Atan2(aimdirection.y, aimdirection.x) * Mathf.Rad2Deg;
         transform.eulerAngles = new Vector3(0, 0, angle);
     }
 
@@ -150,7 +151,7 @@ public class playermovement : MonoBehaviour
             ismoving = true;
             apressed = true;
             //playerSprite.flipX = true;
-            //body.transform.rotation = Quaternion.Euler(0, 180, 0);
+            body.transform.rotation = Quaternion.Euler(0, 180, 0);
         }
         else
         {
@@ -163,7 +164,7 @@ public class playermovement : MonoBehaviour
             ismoving = true;
             dpressed = true;
             //playerSprite.flipX = false;
-            //body.transform.rotation = Quaternion.Euler(0, 0, 0);
+            body.transform.rotation = Quaternion.Euler(0, 0, angle);
         }
         else
         {
