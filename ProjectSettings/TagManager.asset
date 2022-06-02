@@ -3,7 +3,13 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - collect
+  - enemy
+  - player
+  - oxygen
+  - wall
+  - wall2
   layers:
   - Default
   - TransparentFX

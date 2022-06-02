@@ -6,13 +6,17 @@ public class whale : MonoBehaviour
 {
     float whalecount;
     bool ismoving;
+    public bool turn;
+    float speed;
+    public float rotatex;
+    public float rotatez;
+    public float rotatey;
 
     // Start is called before the first frame update
     void Start()
     {
-        ismoving = false;
-       whalecount =  Random.Range(0f, 15f);
-        StartCoroutine(whaleenter());
+        ismoving = true;
+        speed = 0.1f;
     }
 
     // Update is called once per frame
@@ -21,14 +25,37 @@ public class whale : MonoBehaviour
         //GetComponent<Rigidbody2D>().AddForce(Vector3.left * 3 * Time.fixedDeltaTime, ForceMode2D.Impulse);
         if (ismoving)
         {
-            GetComponent<Rigidbody2D>().AddForce(Vector3.left *0.1f* Time.fixedDeltaTime, ForceMode2D.Impulse);
+            GetComponent<Rigidbody2D>().AddForce(Vector3.left *speed* Time.fixedDeltaTime, ForceMode2D.Impulse);
         }
     }
 
-    IEnumerator whaleenter()
+    private void OnCollisionEnter2D(Collision2D other)
     {
-        ismoving = true;
-        yield return new WaitForSeconds(5f);
+        if(other.gameObject.tag == "wall" && turn)
+        {
+            speed = speed * 1;
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        }
+        if (other.gameObject.tag == "wall2" && turn)
+        {
+            speed = speed * -1;
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
+    }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "wall" && turn)
+        {
+            speed = -0.1f;
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
+        }
+        if (other.gameObject.tag == "wall2" && turn)
+        {
+            speed = 0.1f;
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
+        }
     }
 }

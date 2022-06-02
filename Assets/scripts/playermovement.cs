@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class playermovement : MonoBehaviour
 {
-    public Image trashmeter;
+    public Slider trashmeter;
     public int trash_collected, trash_divider, totaltrash;
     bool apressed, dpressed, spressed, wpressed;
     public float speed = 25.0f;
@@ -21,12 +21,13 @@ public class playermovement : MonoBehaviour
     public Image dirt;
     public Animator playerbody;
     float dirtint;
+    public Slider oxybar;
 
     bool ismoving;
     // Start is called before the first frame update
     void Start()
     {
-        trashmeter = GetComponent<Image>();
+        dirtint = 0.7f;
         ismoving = false;
         playerbody = GetComponent<Animator>();
         injury.SetActive(false);
@@ -34,10 +35,13 @@ public class playermovement : MonoBehaviour
         pause.SetActive(false);
         lost.SetActive(false);
         ispaused = true;
-        trashmeter.fillAmount = 0;
+        trashmeter.value = 0;
         player = GetComponent<Rigidbody2D>();
-        dirt = GetComponent<Image>();
-        dirtint = dirt.color.a;
+        var tea = dirt.GetComponent<Image>();
+        Color eta = tea.color;
+        eta.a = dirtint;
+        dirt.color = eta;
+        //dirtint = dirt.color.a;
         
 
     }
@@ -118,7 +122,7 @@ public class playermovement : MonoBehaviour
         }
         #endregion
 
-        if(trashmeter.fillAmount == 1)
+        if(trashmeter.value == 1)
         {
             winning_condition();
         }
@@ -184,92 +188,28 @@ public class playermovement : MonoBehaviour
 
     void O2check()
     {
-        if(cntdnw <= 100)
+
+        oxybar.value = cntdnw / 120f;
+        if(oxybar.value <= 0)
         {
-            var tea = o6.GetComponent<Image>();
-            Color eta = tea.color;
-            eta.a = 0;
-            o6.color = eta;
-        }
-        if (cntdnw <= 80)
-        {
-            var tea = o5.GetComponent<Image>();
-            Color eta = tea.color;
-            eta.a = 0;
-            o5.color = eta;
-        }
-        if (cntdnw <= 60)
-        {
-            var tea = o4.GetComponent<Image>();
-            Color eta = tea.color;
-            eta.a = 0;
-            o4.color = eta;
-        }
-        if (cntdnw <= 40)
-        {
-            var tea = o3.GetComponent<Image>();
-            Color eta = tea.color;
-            eta.a = 0;
-            o3.color = eta;
-        }
-        if (cntdnw <= 20)
-        {
-            var tea = o2.GetComponent<Image>();
-            Color eta = tea.color;
-            eta.a = 0;
-            o2.color = eta;
-        }
-        if (cntdnw <= 0)
-        {
-            var tea = o1.GetComponent<Image>();
-            Color eta = tea.color;
-            eta.a = 0;
-            o1.color = eta;
             gameend();
         }
     }
 
     void replenish()
     {
-        cntdnw = 120;
-        var tea = o6.GetComponent<Image>();
-        Color eta = tea.color;
-        eta.a = 1;
-        o6.color = eta;
-
-         tea = o5.GetComponent<Image>();
-         eta = tea.color;
-        eta.a = 1;
-        o5.color = eta;
-
-        tea = o4.GetComponent<Image>();
-         eta = tea.color;
-        eta.a = 1;
-        o4.color = eta;
-
-         tea = o3.GetComponent<Image>();
-         eta = tea.color;
-        eta.a = 1;
-        o3.color = eta;
-
-        tea = o2.GetComponent<Image>();
-         eta = tea.color;
-        eta.a = 1;
-        o2.color = eta;
-
-         tea = o1.GetComponent<Image>();
-         eta = tea.color;
-        eta.a = 1;
-        o1.color = eta;
-
+        cntdnw += 10;
+        
     }
 
     void trashcollection()
     {
-        dirtint-=10;
-        //dirt.color = new Color(dirt.color.r, dirt.color.g, dirt.color.b,0);
-        //dirt.color = new Color(0, 0, 0,0);
-        trashmeter.fillAmount+= 0.1f;
+        dirtint-=0.07f;
+        var tea = dirt.GetComponent<Image>();
+        Color eta = tea.color;
+        eta.a = dirtint;
+        dirt.color = eta;
+        trashmeter.value+= 0.1f;
     }
 
 
